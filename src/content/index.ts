@@ -1,5 +1,19 @@
-import { Readability } from '@mozilla/readability'
+import { Readability, isProbablyReaderable } from '@mozilla/readability'
 import TurndownService from 'turndown'
+
+function sendIsReadable() {
+    let readable = isProbablyReaderable(document)
+    console.log("sneding readable", readable)
+    chrome.runtime.sendMessage({ isProbablyReaderable: readable })
+}
+
+if (document.readyState === "complete") {
+    sendIsReadable()
+} else {
+    window.addEventListener("load", (event) => {
+        sendIsReadable()
+    });
+}
 
 function addCapturedOn(articleContent: string) {
     const date = `${new Date().toLocaleDateString()} - ${new Date().toISOString().substring(11, 19)}`

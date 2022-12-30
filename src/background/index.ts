@@ -2,6 +2,7 @@ chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.sendMessage(tab.id ?? 0, { parsePage: true })
 })
 
+var enabledLookup:Record<number, bool> = {}
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (!!request.parseTwitter) {
         // Nitter nicely unrolls threads for us, use its HTML as the basis for our parsing
@@ -24,15 +25,32 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             .then((response) => sendResponse(response))
 
         return true
+    } else if (request.isProbablyReaderable !== undefined) {
+        enabledLookup[sender.tab?.id ?? -1] = request.isProbablyReaderable
+        setEnabled(sender.tab?.id ?? -1)
     }
 })
+
+function setEnabled(tab: number) {
+    if (enabledLookup[tab]) {
+        chrome.action.setIcon({path: "img/logo-16.png"});
+        chrome.action.enable(tab)
+    } else{
+        chrome.action.setIcon({path: "img/logo-48-disabled.png"});
+        chrome.action.disable(tab)
+    }
+}
+
+chrome.tabs.onActivated.addListener(function(tab) {
+    setEnabled(tab.tabId)
+});
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (!!tab) {
         if (info.menuItemId == "contextpage") {
-            chrome.tabs.sendMessage(tab.id ?? 0, { parsePage: true })
+            chrome.tabs.sendMessage(tab.id ?? -1, { parsePage: true })
         } else {
-            chrome.tabs.sendMessage(tab.id ?? 0, { parseSelection: info.selectionText })
+            chrome.tabs.sendMessage(tab.id ?? -1, { parseSelection: info.selectionText })
         }
     }
 });
