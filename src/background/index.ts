@@ -2,7 +2,7 @@ chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.sendMessage(tab.id ?? 0, { parsePage: true })
 })
 
-var enabledLookup:Record<number, bool> = {}
+var enabledLookup: Record<number, bool> = {}
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (!!request.parseTwitter) {
         // Nitter nicely unrolls threads for us, use its HTML as the basis for our parsing
