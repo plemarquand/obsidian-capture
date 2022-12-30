@@ -1,19 +1,18 @@
+import { fetchPageWithRetry } from './utils'
+
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.sendMessage(tab.id ?? 0, { parsePage: true })
 })
 
-var enabledLookup: Record<number, bool> = {}
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+var enabledLookup: Record<number, boolean> = {}
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (!!request.parseTwitter) {
-        // Nitter nicely unrolls threads for us, use its HTML as the basis for our parsing
-        fetch(`https://nitter.it${request.parseTwitter}`)
+        fetchPageWithRetry(`https://nitter.it${request.parseTwitter}`)
             .then((result) => result.text())
             .then((text) => sendResponse(text))
-        
+
         return true
     } else if (!!request.base64Image) {
-        console.log('fetching', request.base64Image)
-
         fetch(request.base64Image)
             .then(response => response.blob())
             .then(blob => new Promise((resolve, reject) => {
@@ -33,15 +32,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function setEnabled(tab: number) {
     if (enabledLookup[tab]) {
-        chrome.action.setIcon({path: "img/logo-16.png"});
+        chrome.action.setIcon({ path: "img/logo-16.png" });
         chrome.action.enable(tab)
-    } else{
-        chrome.action.setIcon({path: "img/logo-48-disabled.png"});
+    } else {
+        chrome.action.setIcon({ path: "img/logo-48-disabled.png" });
         chrome.action.disable(tab)
     }
 }
 
-chrome.tabs.onActivated.addListener(function(tab) {
+chrome.tabs.onActivated.addListener(function (tab) {
     setEnabled(tab.tabId)
 });
 
