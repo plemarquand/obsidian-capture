@@ -1,8 +1,8 @@
-import { limitTitleLength, parseMarkdown } from './utils'
+import { limitTitleLength, parseMarkdown, addMetadata } from './utils'
 
 async function parseContent(articleContent: string) {
     const markdown = await parseMarkdown(articleContent)
-    return `[Original URL](${document.URL}) - ${markdown}`
+    return addMetadata(markdown, document.URL, 'selection')
 }
 
 async function parseSelection(selection: string) {

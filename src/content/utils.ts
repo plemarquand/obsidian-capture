@@ -12,9 +12,16 @@ function limitTitleLength(title: string) {
     return title.length > 200 ? `${title.substring(0, 200 - 3)}...` : title
 }
 
-function addCapturedOn(articleContent: string) {
+function addMetadata(articleContent: string, url: string, type: 'selection' | 'page' | 'tweet_thread') {
     const date = `${new Date().toLocaleDateString()} - ${new Date().toISOString().substring(11, 19)}`
-    return `Captured on ${date}<br/><br/>${articleContent}`
+    return `---
+captured_on: ${date}
+original_url: ${url}
+type: ${type}
+tags: clipping
+---
+
+${articleContent}`
 }
 
 function findClosingParen(text: string, openPos: number): number {
@@ -32,14 +39,14 @@ function findClosingParen(text: string, openPos: number): number {
 }
 
 async function parseMarkdown(content: string) {
-    let markdown = new TurndownService().turndown(addCapturedOn(content));
-    const regex = /\[/mg
+    let markdown = new TurndownService().turndown(content);
+    const bracketRegex = /\[/mg
 
     // Turndown has a quirk where if a link wraps an image they nest properly but with
     // newlines between the link's square brackets. This causes Obsidian to render the enclosing link
     // improperly. Make sure there exists no newlines between opening and closing square brackets.
     let match: RegExpMatchArray | null
-    while ((match = regex.exec(markdown)) !== null) {
+    while ((match = bracketRegex.exec(markdown)) !== null) {
         if (match.index !== undefined) {
             const closeIndex = findClosingParen(markdown, match.index ?? -1)
             const toReplace = markdown.substring(match.index, closeIndex + 1)
@@ -84,7 +91,7 @@ function combineCodeBlocks(markdown: string) {
 export { 
     combineCodeBlocks, 
     limitTitleLength, 
-    addCapturedOn, 
+    addMetadata, 
     sendMessageWithResponse, 
     parseMarkdown 
 }
