@@ -8,7 +8,7 @@ async function parseContent(articleContent: string) {
 async function parseSelection(selection: string) {
     const markdown = await parseContent(selection)
     const title = limitTitleLength(document.title)
-
+console.log("markdown", markdown)
     return { markdown, title }
 }
 

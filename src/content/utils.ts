@@ -88,10 +88,18 @@ function combineCodeBlocks(markdown: string) {
     return output
 }
 
+function pathJoin(parts: string[], sep: string = '/') {
+    var separator = sep || '/';
+    var replace   = new RegExp(separator+'{1,}', 'g');
+    return parts.join(separator).replace(replace, separator);
+ }
+ 
+
 export { 
     combineCodeBlocks, 
     limitTitleLength, 
     addMetadata, 
     sendMessageWithResponse, 
-    parseMarkdown 
+    parseMarkdown,
+    pathJoin
 }

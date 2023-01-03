@@ -14,9 +14,18 @@
 }
 
 main {
-  text-align: center;
   padding: 1em;
   margin: 0 auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+}
+
+input {
+
 }
 
 h3 {

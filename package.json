@@ -22,13 +22,16 @@
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.2",
+    "object-diff": "^0.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-final-form": "^6.5.9",
     "turndown": "^7.1.1"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^1.0.12",
     "@types/chrome": "^0.0.206",
+    "@types/object-diff": "^0.0.2",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/turndown": "^5.0.1",
