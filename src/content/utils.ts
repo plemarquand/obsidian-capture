@@ -1,4 +1,5 @@
 import TurndownService from 'turndown'
+import { Config } from '../types'
 
 function sendMessageWithResponse<T>(message: any): Promise<T> {
     return new Promise((resolve) => {
@@ -12,16 +13,24 @@ function limitTitleLength(title: string) {
     return title.length > 200 ? `${title.substring(0, 200 - 3)}...` : title
 }
 
-function addMetadata(articleContent: string, url: string, type: 'selection' | 'page' | 'tweet_thread') {
-    const date = `${new Date().toLocaleDateString()} - ${new Date().toISOString().substring(11, 19)}`
-    return `---
-captured_on: ${date}
-original_url: ${url}
-type: ${type}
-tags: clipping
----
+function replaceMarkers(obj: { [key: string]: any }, str: string): string {
+    const markerRegex = /\${([^{}]*)}/g;
 
-${articleContent}`
+    return str.replace(markerRegex, (match: string, key: string) => {
+        return obj.hasOwnProperty(key) ? obj[key] : match
+    });
+  }
+
+function addMetadata(config: Config, content: string, url: string, type: 'selection' | 'page' | 'tweet_thread') {
+    const date = `${new Date().toLocaleDateString()} - ${new Date().toISOString().substring(11, 19)}`
+    const data = {
+        date,
+        url,
+        type,
+        content
+    }
+
+    return replaceMarkers(data, config.template)
 }
 
 function findClosingParen(text: string, openPos: number): number {
@@ -93,13 +102,13 @@ function pathJoin(parts: string[], sep: string = '/') {
     var replace   = new RegExp(separator+'{1,}', 'g');
     return parts.join(separator).replace(replace, separator);
  }
- 
 
-export { 
-    combineCodeBlocks, 
-    limitTitleLength, 
-    addMetadata, 
-    sendMessageWithResponse, 
+
+export {
+    combineCodeBlocks,
+    limitTitleLength,
+    addMetadata,
+    sendMessageWithResponse,
     parseMarkdown,
     pathJoin
 }

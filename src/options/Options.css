@@ -24,8 +24,21 @@ form {
   max-width: 300px;
 }
 
-input {
+input, textarea {
+  margin-bottom: 1rem;
+}
 
+textarea {
+  height: 200px;
+}
+
+p {
+  line-height: 1em;
+  margin-top: 0.25em;
+}
+
+label {
+  font-weight: bold;
 }
 
 h3 {
@@ -48,6 +61,15 @@ a {
   margin: 0.5rem;
   color: #cccccc;
   text-decoration: none;
+}
+
+.form-element {
+  display: flex;
+  flex-direction: column;
+}
+
+.error {
+  color: red;
 }
 
 @media (min-width: 480px) {

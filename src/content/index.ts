@@ -3,25 +3,16 @@ import { isTwitterThread, parseTwitterThread } from './twitter'
 import { parseWebpage } from './page'
 import { parseSelection } from './selection'
 import { pathJoin } from './utils'
-import { Config } from '../types'
+import { loadConfig } from '../config'
 
 function sendIsReadable() {
-    let readable = isProbablyReaderable(document) || isTwitterThread()
-    chrome.runtime.sendMessage({ isProbablyReaderable: readable })
+    chrome.runtime.sendMessage({
+        isProbablyReaderable: isProbablyReaderable(document) || isTwitterThread()
+    })
 }
 
 async function parsePage() {
-    if (isTwitterThread()) {
-        return parseTwitterThread()
-    } else {
-        return parseWebpage()
-    }
-}
-
-async function loadConfig(): Promise<Config> {
-    return new Promise((resolve) => {
-        chrome.storage.sync.get('config', (args) => { resolve(args.config) })
-    })
+    return isTwitterThread() ? parseTwitterThread() : parseWebpage()
 }
 
 // register listener to receive messages
@@ -35,7 +26,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
             const content = encodeURIComponent(markdown)
             const formattedTitle = encodeURIComponent(title.replace(/[:\\/]/g, ''))
             const path = pathJoin([config.path, formattedTitle])
-            const url = `obsidian://new?name=${path}${formattedTitle}&content=${content}`
+            const url = `obsidian://new?name=${path}&content=${content}`
 
             window.open(url, '_self')
         }
@@ -47,7 +38,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
         const content = encodeURIComponent(markdown)
         const formattedTitle = encodeURIComponent(title.replace(/[:\\/]/g, ''))
         const path = pathJoin([config.path, formattedTitle])
-        const url = `obsidian://new?name=${path}${formattedTitle}&content=${content}`
+        const url = `obsidian://new?name=${path}&content=${content}`
 
         window.open(url, '_self')
     }

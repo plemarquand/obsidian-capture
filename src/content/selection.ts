@@ -1,14 +1,15 @@
 import { limitTitleLength, parseMarkdown, addMetadata } from './utils'
+import { loadConfig } from '../config'
 
 async function parseContent(articleContent: string) {
     const markdown = await parseMarkdown(articleContent)
-    return addMetadata(markdown, document.URL, 'selection')
+    const config = await loadConfig()
+    return addMetadata(config, markdown, document.URL, 'selection')
 }
 
 async function parseSelection(selection: string) {
     const markdown = await parseContent(selection)
     const title = limitTitleLength(document.title)
-console.log("markdown", markdown)
     return { markdown, title }
 }
 

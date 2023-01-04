@@ -1,9 +1,11 @@
 import { Readability } from '@mozilla/readability'
-import { limitTitleLength,  parseMarkdown, addMetadata } from './utils'
+import { limitTitleLength, parseMarkdown, addMetadata } from './utils'
+import { loadConfig } from '../config'
 
 async function parseContent(articleContent: string) {
     const markdown = await parseMarkdown(articleContent)
-    return addMetadata(markdown, document.URL, 'page')
+    const config = await loadConfig()
+    return addMetadata(config, markdown, document.URL, 'page')
 }
 
 async function parseWebpage() {

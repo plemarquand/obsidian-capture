@@ -1,5 +1,5 @@
 import diff from "object-diff";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormSpy } from "react-final-form";
 
 interface Props<T> {
@@ -15,7 +15,7 @@ interface Props<T> {
  * AutoSave is based on the example from: https://codesandbox.io/s/5w4yrpyo7k
  */
 function AutoSave<T extends {}>(props: Props<T>) {
-  const [timeoutRef, setTimeoutRef] = useState<NodeJS.Timer | null>(null);
+  const [timeoutRef, setTimeoutRef] = useState<number | null>(null);
   const [values, setValues] = useState(props.values);
   const [promise, setPromise] = useState<Promise<void> | null>(null);
 
@@ -51,7 +51,7 @@ function AutoSave<T extends {}>(props: Props<T>) {
 export default function<T extends {}>(props: Omit<Props<T>, "values">) {
   return (
     <FormSpy subscription={{ values: true }}>
-      {({ values }) => <AutoSave values={values} {...props} />}
+      {({ values }) => <AutoSave values={values as T} {...props} />}
     </FormSpy>
   );
 }

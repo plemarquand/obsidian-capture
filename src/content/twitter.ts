@@ -1,8 +1,10 @@
 import { sendMessageWithResponse, limitTitleLength, parseMarkdown, addMetadata } from './utils'
+import { loadConfig } from '../config'
 
 async function parseTweetThread(threadContent: string) {
     const markdown = await parseMarkdown(threadContent)
-    return addMetadata(markdown, document.URL, 'tweet_thread')
+    const config = await loadConfig()
+    return addMetadata(config, markdown, document.URL, 'tweet_thread')
 }
 
 function isTwitterThread() {
@@ -36,9 +38,6 @@ async function parseTwitterThread() {
     const iframe = buildIFrame(nitterHTML)
     const tweetElements = extractTweets(iframe)
     const articleContentPromises = tweetElements.map((v): string => {
-
-        // TODO: This might not be needed anymore once all images are base64d in 
-        // the parseMarkdown utils method.
         const img = v.querySelector('img')
         if (img) {
             // These images point to nitter endpoints but because we dropped this in

@@ -1,4 +1,26 @@
 import { fetchPageWithRetry } from './utils'
+import { loadConfig } from '../config'
+import { Config } from '../types'
+
+const template = `---
+captured_on: \$\{date\}
+original_url: \$\{url\}
+type: \$\{type\}
+tags: clipping
+---
+
+\$\{content\}`
+
+const initialConfig: Config = {
+    path: '/',
+    template: template
+}
+
+// Overlay the saved configuration on the default config
+loadConfig()
+    .then((config: Config) => {
+        chrome.storage.sync.set({ config: { ...initialConfig, ...config } });
+    })
 
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.sendMessage(tab.id ?? 0, { parsePage: true })
