@@ -1,4 +1,5 @@
 import TurndownService from 'turndown'
+import { HTMLarkdown, Rule } from 'htmlarkdown'
 import { Config } from '../types'
 
 function sendMessageWithResponse<T>(message: any): Promise<T> {
@@ -48,7 +49,12 @@ function findClosingParen(text: string, openPos: number): number {
 }
 
 async function parseMarkdown(content: string) {
-    let markdown = new TurndownService().turndown(content);
+
+    // HTMLarkdown doesn't like the <article> tag that comes out of readability.
+    content = content.replace('<article>', '').replace('</article>', '')
+
+    const htmlarkdown = new HTMLarkdown()
+    let markdown = htmlarkdown.convert(content, true).replace(/&nbsp;/g, ' ')
     const bracketRegex = /\[/mg
 
     // Turndown has a quirk where if a link wraps an image they nest properly but with
