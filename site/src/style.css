@@ -77,6 +77,29 @@ h1 {
   color: #888;
 }
 
+.hero {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  width: 100vh;
+  padding-left: 220px;
+  background: url('./bg.svg') no-repeat;
+}
+
+.hero h1 {
+  padding-top: 117px;
+  text-shadow: 2px 2px 2px black;
+}
+
+.hero a {
+  display: block;
+  border-radius: 5px;
+  padding: 20px;
+  color: #eee;
+  font-weight: bold;
+  background-color: #453994
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;

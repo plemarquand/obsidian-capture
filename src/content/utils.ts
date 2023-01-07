@@ -1,4 +1,3 @@
-import TurndownService from 'turndown'
 import { HTMLarkdown, Rule } from 'htmlarkdown'
 import { Config } from '../types'
 
@@ -104,11 +103,11 @@ function combineCodeBlocks(markdown: string) {
 }
 
 function pathJoin(parts: string[], sep: string = '/') {
-    var separator = sep || '/';
-    var replace   = new RegExp(separator+'{1,}', 'g');
+    const separator = sep || '/';
+    const regexSep = separator === '\\' ? `${separator}${separator}` : separator
+    const replace = new RegExp(regexSep+'+', 'g');
     return parts.join(separator).replace(replace, separator);
- }
-
+}
 
 export {
     combineCodeBlocks,
