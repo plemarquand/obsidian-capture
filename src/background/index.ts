@@ -49,6 +49,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     } else if (request.isProbablyReaderable !== undefined) {
         enabledLookup[sender.tab?.id ?? -1] = request.isProbablyReaderable
         setEnabled(sender.tab?.id ?? -1)
+    } else if (request.setIcon !== undefined) {
+        if (request.setIcon == null) {
+            chrome.action.setIcon({ path: "img/logo-16.png" });
+        } else {
+            const data = (request.setIcon as ImageData)
+            chrome.action.setIcon({ imageData: data })
+        }
     }
 })
 

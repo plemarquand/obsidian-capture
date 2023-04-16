@@ -2,7 +2,7 @@ import { sendMessageWithResponse, limitTitleLength, parseMarkdown, addMetadata }
 import { loadConfig } from '../config'
 
 async function parseTweetThread(threadContent: string) {
-    const markdown = await parseMarkdown(threadContent)
+    const markdown = await parseMarkdown(`<div>${threadContent}</div>`)
     const config = await loadConfig()
     return addMetadata(config, markdown, document.URL, 'tweet_thread')
 }

@@ -2,7 +2,7 @@ import { limitTitleLength, parseMarkdown, addMetadata } from './utils'
 import { loadConfig } from '../config'
 
 async function parseContent(articleContent: string) {
-    const markdown = await parseMarkdown(articleContent)
+    const markdown = await parseMarkdown(`<div>${articleContent}</div>`)
     const config = await loadConfig()
     return addMetadata(config, markdown, document.URL, 'selection')
 }
